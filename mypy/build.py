@@ -835,7 +835,11 @@ class BuildManager:
 
     def is_module(self, id: str) -> bool:
         """Is there a file in the file system corresponding to module id?"""
-        return find_module_simple(id, self) is not None
+        x = find_module_with_reason(id, self)
+        return (not isinstance(x, ModuleNotFoundReason)) or x in (
+            ModuleNotFoundReason.FOUND_WITHOUT_TYPE_HINTS,
+            ModuleNotFoundReason.APPROVED_STUBS_NOT_INSTALLED,
+        )
 
     def parse_file(
         self, id: str, path: str, source: str, ignore_errors: bool, options: Options
